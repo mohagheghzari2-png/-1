@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>خانه یاسین | شبیه‌ساز سه‌بعدی</title>
+<style>
+:root{--accent:#43d9ff;--panel:rgba(12,18,29,.88);--text:#f5f7fb}
+*{box-sizing:border-box}body{margin:0;background:#111722;color:var(--text);font-family:Tahoma,Arial,sans-serif;overflow:hidden;touch-action:none}
+#game{position:relative;width:100vw;height:100dvh;min-height:520px;background:linear-gradient(#8298a6 0 42%,#6d6c64 42% 100%);overflow:hidden}
+#room{position:absolute;inset:0;perspective:900px;overflow:hidden;background:linear-gradient(#9aabb3 0 40%,#b7b2a4 40% 100%)}
+.wall{position:absolute;left:4%;right:4%;top:5%;height:48%;background:linear-gradient(110deg,#c8c4ba,#e0ddd4 50%,#c5c1b8);border:10px solid #8a8175;box-shadow:0 15px 35px #0005}
+.floor{position:absolute;left:-10%;right:-10%;bottom:-12%;height:55%;background:repeating-linear-gradient(90deg,#8c6a4e 0 2px,#a17b5b 2px 110px);transform:perspective(500px) rotateX(35deg);transform-origin:top}
+.window{position:absolute;left:8%;top:12%;width:23%;height:27%;background:linear-gradient(#8ac9ee,#d6efff);border:12px solid #6b5948;box-shadow:0 0 25px #fff8}
+.window:before{content:"";position:absolute;inset:50% 0 auto;border-top:6px solid #6b5948}.window:after{content:"";position:absolute;inset:0 50% 0 auto;border-right:6px solid #6b5948}
+.tree{position:absolute;bottom:-5%;left:10%;width:18px;height:70%;background:#6b4932}.tree:before{content:"";position:absolute;width:100px;height:100px;border-radius:50%;background:#3f8551;left:-42px;top:-45px;box-shadow:30px 12px #4e9857,-15px 30px #34764a}
+.tv{position:absolute;top:13%;right:17%;width:40%;height:38%;background:#080b10;border:9px solid #171b20;border-radius:5px;box-shadow:0 10px 25px #0008;cursor:pointer}
+.tvscreen{height:100%;background:linear-gradient(135deg,#111d31,#0a101c);display:flex;align-items:center;justify-content:center;overflow:hidden}
+.tvlogo{font-size:clamp(22px,4vw,48px);font-weight:bold;letter-spacing:-2px}.tvlogo span{color:#ff3030}
+.tvstand{position:absolute;bottom:-19px;left:42%;width:16%;height:18px;background:#171b20}
+.tvstand:after{content:"";position:absolute;top:14px;left:-45%;width:190%;height:7px;background:#171b20}
+.shelf{position:absolute;right:13%;top:52%;width:48%;height:14px;background:#654b39;box-shadow:0 7px 12px #0005}
+.couch{position:absolute;bottom:12%;left:25%;width:48%;height:19%;background:#555b61;border-radius:28px 28px 12px 12px;box-shadow:inset 0 8px #777d83,0 18px 25px #0005}
+.couch:before{content:"";position:absolute;left:-5%;right:-5%;bottom:0;height:60%;background:#454b52;border-radius:14px}
+.couch:after{content:"";position:absolute;left:5%;right:5%;top:15%;height:42%;border-radius:15px;background:linear-gradient(90deg,#686f76 0 32%,#50575e 32% 34%,#686f76 34% 66%,#50575e 66% 68%,#686f76 68%)}
+.table{position:absolute;bottom:5%;left:38%;width:27%;height:7%;background:#79583e;border-radius:8px;box-shadow:0 15px 0 -5px #503b2b}
+.remote{position:absolute;bottom:7%;left:48%;width:25px;height:70px;border-radius:15px;background:#17191e;border:2px solid #555;transform:rotate(15deg);box-shadow:0 4px 9px #0008}
+.remote:before{content:"";position:absolute;top:8px;left:7px;width:7px;height:7px;border-radius:50%;background:#d44}
+.door{position:absolute;left:3%;top:34%;width:16%;height:42%;background:linear-gradient(90deg,#6b4934,#916a4b);border:8px solid #4c382b;transform-origin:left;transition:transform .8s;box-shadow:inset 0 0 0 3px #ad8964}
+.door.open{transform:perspective(500px) rotateY(-65deg)}
+.knob{position:absolute;right:12%;top:50%;width:9px;height:9px;border-radius:50%;background:#e6bd55}
+#avatar{position:absolute;bottom:7%;left:49%;width:70px;height:155px;transform:translateX(-50%);z-index:5;filter:drop-shadow(0 8px 5px #0006);transition:left .15s,bottom .4s}
+.head{position:absolute;top:0;left:21px;width:30px;height:37px;border-radius:45% 45% 42% 42%;background:#bd8768;border:1px solid #885b49}
+.hair{position:absolute;top:-3px;left:20px;width:32px;height:14px;background:#171719;border-radius:50% 50% 15% 15%;z-index:2}
+.body{position:absolute;top:38px;left:9px;width:52px;height:66px;background:#eee;border-radius:12px 12px 5px 5px;border:2px solid #bbb}
+.body:after{content:"Y";position:absolute;top:14px;left:17px;color:#176b9b;font-weight:bold;font-size:19px}
+.arm{position:absolute;top:43px;width:13px;height:54px;background:#eee;border-radius:10px}.arm.l{left:0;transform:rotate(8deg)}.arm.r{right:0;transform:rotate(-8deg)}
+.leg{position:absolute;top:101px;width:20px;height:48px;background:#17191f;border-radius:4px}.leg.l{left:13px}.leg.r{right:13px}
+.shoe{position:absolute;bottom:0;width:25px;height:10px;background:#f4f4f4;border-radius:8px}.shoe.l{left:8px}.shoe.r{right:8px}
+#hud{position:absolute;inset:0;pointer-events:none}
+.topbar{position:absolute;top:12px;left:12px;right:12px;display:flex;justify-content:space-between;align-items:center;gap:8px}
+.pill,.action,.panel{background:var(--panel);border:1px solid #ffffff25;border-radius:14px;backdrop-filter:blur(12px);box-shadow:0 8px 24px #0003}
+.pill{padding:10px 14px;font-size:13px}
+#prompt{position:absolute;bottom:22%;left:50%;transform:translateX(-50%);padding:12px 18px;display:none;pointer-events:auto}
+button{color:white;background:#26384e;border:1px solid #ffffff35;border-radius:12px;padding:11px 14px;font-size:14px;cursor:pointer}
+button:active{transform:scale(.97)}button.primary{background:#087eae}
+#joystick{position:absolute;bottom:24px;left:22px;width:116px;height:116px;border-radius:50%;background:#07111b88;border:2px solid #ffffff55;pointer-events:auto;touch-action:none}
+#stick{position:absolute;left:35px;top:35px;width:44px;height:44px;border-radius:50%;background:#d9e5efcc;border:2px solid #fff;box-shadow:0 3px 10px #0007}
+#actions{position:absolute;bottom:28px;right:18px;display:flex;gap:9px;pointer-events:auto;flex-wrap:wrap;justify-content:flex-end;max-width:55%}
+#actions button{min-width:66px}
+#remotePanel,#phonePanel,#youtubePanel,#bedroomPanel,#rgbPanel{display:none;position:absolute;inset:6%;z-index:20;padding:18px;overflow:auto;pointer-events:auto}
+.panel h2{margin:4px 0 14px;font-size:20px}.panel p{color:#cbd5e1;font-size:13px;line-height:1.8}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(90px,1fr));gap:10px}
+.tile{background:#ffffff12;border:1px solid #ffffff22;border-radius:14px;padding:15px 8px;text-align:center;cursor:pointer}
+.tile b{display:block;margin-top:7px;font-size:13px}
+.close{float:left;background:#6a2730}
+#tvhome{display:none;position:absolute;inset:0;background:linear-gradient(120deg,#111a2c,#090d16);padding:5%;color:white;flex-direction:column;justify-content:space-between}
+#tvhome .apps{display:flex;gap:10px;flex-wrap:wrap}.app{padding:16px 20px;background:#26364d;border-radius:10px;min-width:90px;text-align:center}
+#youtube{display:none;position:absolute;inset:0;background:#0f0f0f;color:white;padding:4%;font-family:Arial}
+.ythead{display:flex;justify-content:space-between;align-items:center}.ytbrand{font-size:24px;font-weight:bold}.ytbrand span{color:#f33}
+.ytrows{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:24px}.video{background:#252525;border-radius:9px;overflow:hidden}.thumb{height:90px;background:linear-gradient(135deg,#314e70,#d47b49);display:grid;place-items:center;font-size:26px}.video small{display:block;padding:8px}
+#bedroom{display:none;position:absolute;inset:0;background:linear-gradient(#9cb4c3 0 42%,#9a8065 42%);padding:20px;color:#fff}
+.bed{position:absolute;bottom:12%;left:25%;width:50%;height:28%;background:#ddd;border-radius:25px 25px 8px 8px;box-shadow:inset 0 18px #fff}
+.desk{position:absolute;right:8%;bottom:23%;width:30%;height:10px;background:#60462f}.monitor{position:absolute;right:15%;bottom:25%;width:18%;height:17%;background:#111;border:6px solid #333}
+#rgbGlow{position:absolute;inset:0;pointer-events:none;opacity:0;mix-blend-mode:screen;background:linear-gradient(90deg,#f0f,#0ff,#ff0);animation:rainbow 2s linear infinite}
+@keyframes rainbow{to{filter:hue-rotate(360deg)}}
+@media(max-width:600px){.tv{right:8%;width:48%;height:31%;top:14%}.couch{left:17%;width:65%}.door{width:19%}#avatar{transform:translateX(-50%) scale(.85);transform-origin:bottom}.ytrows{grid-template-columns:repeat(2,1fr)}.thumb{height:65px}}
+</style></head>
+<body>
+<div id="game">
+<div id="room">
+ <div class="wall"></div><div class="window"><div class="tree"></div></div><div class="floor"></div>
+ <div class="tv" id="tv" onclick="openTV()"><div class="tvscreen"><div class="tvlogo">SAMSUNG</div><div id="tvhome"><div><b>Samsung Smart TV</b><p>خانه یاسین · سه‌شنبه</p></div><div class="apps"><div class="app" onclick="event.stopPropagation();openYT()">▶ YouTube</div><div class="app">⚙ تنظیمات</div><div class="app">▣ HDMI</div></div><small>با کنترل برنامه‌ای را انتخاب کن</small></div><div id="youtube"><div class="ythead"><div class="ytbrand"><span>▶</span> YouTube</div><button onclick="event.stopPropagation();backTV()">بازگشت</button></div><p>خانه　 موسیقی　 بازی　 پیشنهادها</p><div class="ytrows"><div class="video"><div class="thumb">🎮</div><small>گیم‌پلی بازی‌ها</small></div><div class="video"><div class="thumb">🎵</div><small>موزیک ویدیو</small></div><div class="video"><div class="thumb">🌍</div><small>ویدیوهای پیشنهادی</small></div></div></div></div><div class="tvstand"></div></div>
+ <div class="shelf"></div><div class="couch"></div><div class="table"></div><div class="remote"></div><div class="door" id="door"><div class="knob"></div></div>
+ <div id="avatar"><div class="hair"></div><div class="head"></div><div class="body"></div><div class="arm l"></div><div class="arm r"></div><div class="leg l"></div><div class="leg r"></div><div class="shoe l"></div><div class="shoe r"></div></div>
+</div>
+<div id="rgbGlow"></div>
+<div id="hud"><div class="topbar"><div class="pill">🏠 خانه یاسین</div><div class="pill" id="status">پذیرایی · آماده بازی</div><button onclick="togglePhone()">📱 گوشی A30s</button></div>
+<div class="pill" id="prompt"></div>
+<div id="joystick"><div id="stick"></div></div>
+<div id="actions"><button onclick="sit()">🛋 نشستن</button><button onclick="toggleDoor()">🚪 در اتاق</button><button onclick="togglePhone()">📱 گوشی</button><button onclick="toggleRGB()">🌈 RGB</button></div></div>
+<div class="panel" id="phonePanel"><button class="close" onclick="togglePhone()">بستن ✕</button><h2>📱 Samsung Galaxy A30s</h2><p>صفحه اصلی گوشی · لمس برنامه‌ها برای باز کردن</p><div class="grid">
+<div class="tile" onclick="alert('شماره‌گیر در این نسخه نمایشی غیرفعال است')">☎️<b>تلفن</b></div><div class="tile" onclick="alert('دوربین نمایشی آماده است')">📷<b>دوربین</b></div><div class="tile" onclick="alert('گالری خالی است؛ عکس‌های بازی اینجا ذخیره می‌شوند')">🖼️<b>گالری</b></div><div class="tile" onclick="settings()">⚙️<b>تنظیمات</b></div><div class="tile" onclick="alert('وای‌فای متصل است')">📶<b>Wi‑Fi</b></div><div class="tile" onclick="alert('تلویزیون Samsung · مانیتور PC')">🖥️<b>Smart View</b></div><div class="tile" onclick="music()">🎵<b>موزیک</b></div><div class="tile" onclick="rgbPanel()">🌈<b>نورپردازی</b></div></div><div id="phoneExtra"></div></div>
+<div class="panel" id="remotePanel"><button class="close" onclick="closePanel('remotePanel')">بستن ✕</button><h2>کنترل تلویزیون</h2><div class="grid"><button onclick="openTV()">⏻ روشن</button><button onclick="openYT()">YouTube</button><button onclick="backTV()">Home</button><button onclick="alert('صدا زیاد شد')">VOL +</button><button onclick="alert('صدا کم شد')">VOL −</button><button onclick="alert('کانال بعدی')">CH +</button></div></div>
+<div class="panel" id="bedroomPanel"><button class="close" onclick="closePanel('bedroomPanel')">بستن ✕</button><h2>اتاق خواب</h2><div class="grid"><div class="tile">🛏️<b>تخت</b></div><div class="tile">💻<b>میز کامپیوتر</b></div><div class="tile" onclick="toggleLight()">💡<b>چراغ</b></div><div class="tile" onclick="toggleDoor()">🚪<b>در</b></div></div><p>پنجره رو به حیاط درخت‌دار · پنجره قابل باز و بسته شدن در نسخه بعدی</p></div>
+<div class="panel" id="rgbPanel"><button class="close" onclick="closePanel('rgbPanel')">بستن ✕</button><h2>🌈 پنل موزیک و RGB</h2><p>آهنگ نمایشی و نورپردازی هماهنگ</p><button onclick="playMusic()">▶ پخش آهنگ نمایشی</button> <button onclick="stopMusic()">■ توقف</button><p>شدت نور</p><input type="range" min="0" max="100" value="60" oninput="document.getElementById('rgbGlow').style.opacity=this.value/100"><p>حالت نور</p><button onclick="toggleRGB()">🌈 رقص نور</button><button onclick="document.getElementById('rgbGlow').style.opacity=0">خاموشی نور</button></div>
+</div>
+<script>
+const $=id=>document.getElementById(id);let x=49,y=7,walking=false,sitting=false,light=true,room='living',rgb=false;
+function move(dx,dy){if(sitting)return;x=Math.max(5,Math.min(94,x+dx));y=Math.max(2,Math.min(24,y+dy));$('avatar').style.left=x+'%';$('avatar').style.bottom=y+'%';$('status').textContent='پذیرایی · موقعیت کاراکتر';}
+const joy=$('joystick'),stick=$('stick');let active=false,startX=0,startY=0;
+function joyStart(e){active=true;let p=e.touches?e.touches[0]:e;startX=p.clientX;startY=p.clientY;e.preventDefault()}
+function joyMove(e){if(!active)return;let p=e.touches?e.touches[0]:e,dx=p.clientX-startX,dy=p.clientY-startY;let d=Math.min(34,Math.hypot(dx,dy)),a=Math.atan2(dy,dx);stick.style.left=(35+Math.cos(a)*d)+'px';stick.style.top=(35+Math.sin(a)*d)+'px';move(dx/250,-dy/250);e.preventDefault()}
+function joyEnd(){active=false;stick.style.left='35px';stick.style.top='35px'}
+joy.addEventListener('pointerdown',joyStart);window.addEventListener('pointermove',joyMove);window.addEventListener('pointerup',joyEnd);
+function togglePhone(){$('phonePanel').style.display=$('phonePanel').style.display==='block'?'none':'block'}
+function openTV(){$('tvhome').style.display='flex';$('youtube').style.display='none';$('tvscreen')?.classList.add('on')}
+function openYT(){$('tvhome').style.display='none';$('youtube').style.display='block'}
+function backTV(){$('youtube').style.display='none';$('tvhome').style.display='flex'}
+function closePanel(id){$(id).style.display='none'}
+function sit(){sitting=!sitting;$('avatar').style.transform=sitting?'translateX(-50%) scale(.8) rotate(4deg)':'translateX(-50%)';$('status').textContent=sitting?'روی مبل نشسته‌ای':'پذیرایی · آماده بازی'}
+function toggleDoor(){$('door').classList.toggle('open');$('bedroomPanel').style.display=$('bedroomPanel').style.display==='block'?'none':'block';}
+function toggleLight(){light=!light;$('bedroomPanel').style.background=light?'linear-gradient(#9cb4c3 0 42%,#9a8065 42%)':'linear-gradient(#202938 0 42%,#27211e 42%)'}
+function settings(){$('phoneExtra').innerHTML='<h3>تنظیمات</h3><p>تم برنامه‌ها</p><button onclick="document.body.style.filter=\'none\'">روشن</button> <button onclick="document.body.style.filter=\'brightness(.75)\'">مشکی</button><p>نور صفحه</p><input type="range" min="30" max="120" value="100" oninput="document.getElementById(\'phonePanel\').style.filter=\'brightness(\'+this.value/100+\')\'">';}
+function music(){$('phoneExtra').innerHTML='<h3>🎵 موزیک</h3><button onclick="playMusic()">▶ پخش</button> <button onclick="stopMusic()">■ توقف</button><p>آهنگ‌های پنل RGB از همین‌جا کنترل می‌شوند.</p>'}
+function rgbPanel(){$('rgbPanel').style.display='block'}
+function toggleRGB(){rgb=!rgb;$('rgbGlow').style.opacity=rgb?.35:0}
+let audioCtx,osc;
+function playMusic(){try{audioCtx=audioCtx||new(window.AudioContext||window.webkitAudioContext)();osc=audioCtx.createOscillator();let gain=audioCtx.createGain();osc.frequency.value=220;gain.gain.value=.04;osc.connect(gain);gain.connect(audioCtx.destination);osc.start();toggleRGB()}catch(e){alert('پخش صدا در این مرورگر پشتیبانی نمی‌شود')}}
+function stopMusic(){if(osc){osc.stop();osc=null}rgb=false;$('rgbGlow').style.opacity=0}
+</script></body></html>
